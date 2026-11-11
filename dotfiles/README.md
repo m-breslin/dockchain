@@ -5,13 +5,13 @@ Professional dotfiles for PyQuant development → modular Zsh configuration, ali
 
 ## Features
 
-- **Zsh Configuration (`.zshrc`)**  
+- **Zsh Configuration (`.zshrc`)**
   Central configuration that sources all modular files.
 
-- **Aliases (`aliases.zsh`)**  
+- **Aliases (`aliases.zsh`)**
   Shortcuts for common Git, Docker, and project commands.
 
-- **Git Configuration (`gitconfig`)**  
+- **Git Configuration (`gitconfig`)**
   Standardized Git aliases and settings.
 
 - **Copy and Paste Dev Container Setup (`.devcontainer`)**
@@ -113,7 +113,7 @@ This opens an interactive wizard. For more details, see: [Powerlevel10k Document
 
 ### Devcontainer Customization
 
-This repository includes a **baseline `.devcontainer/devcontainer.json`** designed to work well for most Python projects.  
+This repository includes a **baseline `.devcontainer/devcontainer.json`** designed to work well for most Python projects.
 You are encouraged to **copy and adapt it per project** rather than treating it as a one-size-fits-all file.
 
 Below are recommended adjustments based on common project types.

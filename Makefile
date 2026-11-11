@@ -21,6 +21,15 @@ install-deps:
 	$(UV) run pre-commit install
 	@echo "✅ Dockchain development environment ready!"
 
+# -------------------------
+# Run all pre-commit hooks on tracked files without committing
+# -------------------------
+.PHONY: pre-commit
+pre-commit:
+	@echo "🔍 Running all pre-commit hooks..."
+	$(UV) run pre-commit run --all-files
+	@echo "✅ Pre-commit checks completed!"
+
 
 # -------------------------
 # Synchronize dependencies with uv.lock
@@ -58,8 +67,15 @@ dockchain-help:
 .PHONY: test
 test:
 	@echo "🧪 Running Dockchain tests..."
-	$(UV) run pytest
-	@echo "✅ Tests completed!"
+	@$(UV) run pytest; \
+	status=$$?; \
+	if [ $$status -eq 5 ]; then \
+		echo "⏭️ Skipping tests: pytest collected no tests."; \
+	elif [ $$status -ne 0 ]; then \
+		exit $$status; \
+	else \
+		echo "✅ Tests completed!"; \
+	fi
 
 
 # -------------------------
@@ -98,9 +114,12 @@ format-check:
 # -------------------------
 .PHONY: type-check
 type-check:
-	@echo "🔍 Running MyPy..."
-	$(UV) run mypy src/
-	@echo "✅ Type checking completed!"
+	@if [ ! -d src ] || ! find src -type f \( -name '*.py' -o -name '*.pyi' \) -print -quit | grep -q .; then \
+		echo "⏭️ Skipping MyPy: no Python source files found under src/."; \
+	else \
+		echo "🔍 Running MyPy..."; \
+		$(UV) run mypy src/ && echo "✅ Type checking completed!"; \
+	fi
 
 
 # -------------------------
