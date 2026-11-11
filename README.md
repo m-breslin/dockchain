@@ -89,6 +89,44 @@ make install-deps
 uv run dockchain --help
 ```
 
+### Run the sample pipeline
+
+The engine is generic: a pipeline is an ordered list of named steps, each with
+an operation and a function. The sample pipeline uses it to extract the source
+CSV, calculate order totals, and load the records into the run artifacts.
+
+```bash
+uv run dockchain run-sample --input samples/test_files/sample_orders.csv
+uv run dockchain runs
+uv run dockchain show <run-id>
+uv run dockchain verify
+```
+
+Each run has a readable directory containing its own ordered steps. The
+records inside are JSON files named by the SHA-256 hash of their exact
+contents; records link to each other by hash. No database file is used.
+
+```text
+artifacts/
+└── runs/
+    └── <run-id>/
+        ├── pipeline/
+        ├── run/
+        └── steps/
+            ├── 01-extract/
+            │   ├── artifacts/
+            │   └── events/
+            ├── 02-transform/
+            │   ├── artifacts/
+            │   └── events/
+            └── 03-load/
+                ├── artifacts/
+                └── events/
+```
+
+The `artifacts/` directory is local output and is excluded from Git. The sample
+CSV is retained in `samples/test_files/` for manual runs and automated tests.
+
 ## Development
 
 Dockchain uses `uv` for Python dependency management and a Makefile for common development tasks.

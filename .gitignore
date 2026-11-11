@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Dockchain local artifacts
+/artifacts/
+
+# Local copy of the previous Dockchain implementation
+/old_dockchain_reference_to_be_deleted/

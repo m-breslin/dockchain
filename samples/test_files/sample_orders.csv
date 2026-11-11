@@ -1,0 +1,6 @@
+order_id,order_date,customer,product,quantity,unit_price
+ORD-1001,2026-01-05,Northwind Books,Notebook,12,3.50
+ORD-1002,2026-01-06,Contoso Market,Coffee,4,12.00
+ORD-1003,2026-01-06,Fabrikam Supply,Pen Set,8,5.25
+ORD-1004,2026-01-07,Northwind Books,Desk Lamp,2,24.99
+ORD-1005,2026-01-08,Adventure Works,Notebook,20,3.50
