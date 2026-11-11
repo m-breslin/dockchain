@@ -7,7 +7,7 @@ from typing import Annotated, Any
 
 import typer
 
-from dockchain.examples.sample_pipeline import run_sample_pipeline
+from dockchain.ledger.config import run_configured_pipeline
 from dockchain.ledger.store import JsonObjectStore
 
 app = typer.Typer(
@@ -15,15 +15,15 @@ app = typer.Typer(
 )
 
 
-@app.command("run-sample")
-def run_sample(
-    input_file: Annotated[Path, typer.Option("--input", exists=True, dir_okay=False)],
+@app.command()
+def run(
+    config: Annotated[Path, typer.Option("--config", exists=True, dir_okay=False)],
     artifacts_dir: Annotated[Path, typer.Option("--artifacts-dir")] = Path("artifacts"),
 ) -> None:
-    """Run the included sample pipeline and record each step."""
+    """Run a YAML pipeline definition and record each step."""
     store = JsonObjectStore(artifacts_dir)
     try:
-        run_id, run_hash = run_sample_pipeline(input_file, store)
+        run_id, run_hash = run_configured_pipeline(config, store)
     except (OSError, ValueError, UnicodeError, csv.Error) as error:
         typer.echo(f"Pipeline failed: {error}", err=True)
         raise typer.Exit(code=1) from error

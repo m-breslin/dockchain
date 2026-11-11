@@ -89,18 +89,48 @@ make install-deps
 uv run dockchain --help
 ```
 
-### Run the sample pipeline
+### Configure and run a pipeline
 
-The engine is generic: a pipeline is an ordered list of named steps, each with
-an operation and a function. The sample pipeline uses it to extract the source
-CSV, calculate order totals, and load the records into the run artifacts.
+Pipeline setup lives in YAML, not in a pipeline-specific Python function. Each
+step selects an operation and gives it the settings it needs. Paths are
+relative to the YAML file, so the sample works from any current directory.
+
+```yaml
+version: 1
+name: sample-orders
+
+steps:
+  - name: extract
+    use: file.read_csv
+    with:
+      path: test_files/sample_orders.csv
+
+  - name: transform
+    use: records.add_column
+    with:
+      name: line_total
+      expression: quantity * unit_price
+
+  - name: load
+    use: file.write_csv
+    with:
+      path: ../output/orders_with_total.csv
+```
+
+Run this example with:
 
 ```bash
-uv run dockchain run-sample --input samples/test_files/sample_orders.csv
+uv run dockchain run --config samples/sample_orders.yaml
 uv run dockchain runs
 uv run dockchain show <run-id>
 uv run dockchain verify
 ```
+
+The initial built-in operations read CSV or JSON files, add a calculated
+column to records, and write CSV or JSON files. The engine is not tied to those
+formats: operations are registered by name, and Python integrations can add
+operations through `OperationRegistry`. API and database operations can follow
+the same interface as they are implemented.
 
 Each run has a readable directory containing its own ordered steps. The
 records inside are JSON files named by the SHA-256 hash of their exact
@@ -126,6 +156,9 @@ artifacts/
 
 The `artifacts/` directory is local output and is excluded from Git. The sample
 CSV is retained in `samples/test_files/` for manual runs and automated tests.
+The sample's written CSV goes to the ignored `output/` directory. Do not put
+credentials directly in pipeline YAML; integrations should read secrets from
+the environment or another secret provider.
 
 ## Development
 

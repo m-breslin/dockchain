@@ -208,6 +208,7 @@ __marimo__/
 
 # Dockchain local artifacts
 /artifacts/
+/output/
 
 # Local copy of the previous Dockchain implementation
 /old_dockchain_reference_to_be_deleted/

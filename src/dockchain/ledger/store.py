@@ -53,17 +53,7 @@ class JsonObjectStore:
         if not object_paths:
             raise FileNotFoundError(f"Object not found: {object_hash}")
 
-        content = object_paths[0].read_bytes()
-        actual_hash = hashlib.sha256(content).hexdigest()
-        if actual_hash != object_hash:
-            raise ValueError(
-                f"Object hash mismatch for {object_hash}: file contents hash to {actual_hash}"
-            )
-
-        record = json.loads(content)
-        if not isinstance(record, dict):
-            raise ValueError(f"Object must contain a JSON object: {object_hash}")
-        return record
+        return self._load_path(object_paths[0], object_hash)
 
     def list_hashes(self) -> list[str]:
         """Return hashes for every JSON record stored under a run directory."""
@@ -73,11 +63,15 @@ class JsonObjectStore:
 
     def list_records(self, record_type: str) -> list[tuple[str, dict[str, Any]]]:
         """Load all verified records of a given type."""
-        records = []
-        for object_hash in self.list_hashes():
-            record = self.load(object_hash)
+        records: list[tuple[str, dict[str, Any]]] = []
+        if not self.runs_dir.exists():
+            return records
+        for path in self.runs_dir.rglob("*.json"):
+            if not path.is_file():
+                continue
+            record = self._load_path(path, path.stem)
             if record.get("record_type") == record_type:
-                records.append((object_hash, record))
+                records.append((path.stem, record))
         return records
 
     def load_run(self, run_id: str) -> tuple[str, dict[str, Any]]:
@@ -98,12 +92,26 @@ class JsonObjectStore:
 
         paths = [path for path in self.runs_dir.rglob("*.json") if path.is_file()]
         for path in paths:
-            run_id = path.relative_to(self.runs_dir).parts[0]
-            self.load(path.stem, run_id)
+            self._load_path(path, path.stem)
         return len(paths)
 
     def _path_for(self, run_id: str, record_directory: str, object_hash: str) -> Path:
         return self.runs_dir / run_id / record_directory / f"{object_hash}.json"
+
+    @staticmethod
+    def _load_path(object_path: Path, object_hash: str) -> dict[str, Any]:
+        if re.fullmatch(r"[0-9a-f]{64}", object_hash) is None:
+            raise ValueError("Object hash must be 64 lowercase hexadecimal characters")
+        content = object_path.read_bytes()
+        actual_hash = hashlib.sha256(content).hexdigest()
+        if actual_hash != object_hash:
+            raise ValueError(
+                f"Object hash mismatch for {object_hash}: file contents hash to {actual_hash}"
+            )
+        record = json.loads(content)
+        if not isinstance(record, dict):
+            raise ValueError(f"Object must contain a JSON object: {object_hash}")
+        return record
 
     @staticmethod
     def _validate_run_id(run_id: str) -> None:
