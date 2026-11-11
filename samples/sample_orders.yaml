@@ -1,0 +1,19 @@
+version: 1
+name: sample-orders
+
+steps:
+  - name: extract
+    use: file.read_csv
+    with:
+      path: test_files/sample_orders.csv
+
+  - name: transform
+    use: records.add_column
+    with:
+      name: line_total
+      expression: quantity * unit_price
+
+  - name: load
+    use: file.write_csv
+    with:
+      path: ../output/orders_with_total.csv
