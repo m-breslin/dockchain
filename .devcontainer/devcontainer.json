@@ -1,0 +1,39 @@
+{
+  "name": "python-devcontainer",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "streetsidesoftware.code-spell-checker",
+        "esbenp.prettier-vscode",
+        "charliermarsh.ruff",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "remote.containers.enableX11Forwarding": false,
+        "terminal.integrated.fontFamily": "MesloLGS NF",
+        "python.terminal.useEnvFile": true
+      }
+    }
+  },
+
+  "postCreateCommand": ".devcontainer/postCreate.sh",
+
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+
+  "runArgs": [
+    "--env", "DISPLAY=",
+    "--env", "WAYLAND_DISPLAY=",
+    "--env", "XDG_RUNTIME_DIR=/tmp"
+  ],
+
+  "updateRemoteUserUID": true
+}

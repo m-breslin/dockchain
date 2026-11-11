@@ -1,0 +1,17 @@
+# Shell scripts must always be Unix
+*.sh text eol=lf
+
+# Zsh config files
+*.zsh text eol=lf
+
+# Dockerfiles
+Dockerfile text eol=lf
+*.Dockerfile text eol=lf
+
+# Config files
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+
+# Docs (optional)
+*.md text eol=lf

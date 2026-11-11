@@ -1,0 +1,25 @@
+# Local configuration files (user-specific, should not be committed)
+.zshrc.local
+*.local
+.env
+.env.local
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary files
+*.swp
+*.swo
+*~
+.vim-tmp
+
+# Dev dependencies (if installing locally)
+node_modules/
+__pycache__/
+*.pyc
+
+# IDE backup files
+*.orig
